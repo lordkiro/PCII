@@ -7,24 +7,31 @@ package model;
 public class Etat {
 	
 	/** Hauteur d'un saut*/
-	public static int jumpH = 10;
-
-	/**Coordon�e sur l'axe x*/
-	public static int xC = 60;
+	public static int jumpH = 60;
 	
-	/**Coordon�e sur l'axe y*/
-	public static int yC = 200;
+	/** Hauteur d'une descente
+	 * @warning modifier coeffChute si on modifie*/
+	public static int dropH = 6;
+
+	/**Coordonée sur l'axe x*/
+	public  int xC = 60;
+	
+	/**Coordonée sur l'axe y*/
+	public  int yC = 550;
 	
 	/**Largeur de l'ovale*/
 	public static int w = 40;
 	
 	/**Hauteur (ou longueur) de l'ovale*/
-	public static int h = 180;
-
+	public static int h = 100;
+	
+	/** Le parcours dans lequel on evolue*/
+	public Parcours parc;
+	
 	/** 
 	 * Methode jump
-	 * si la l'ovale "sort de la fenetre" apres son saut,
-	 * il est mis coll� au bord superieur de la fenetre.
+	 * si l'ovale "sort de la fenetre" apres son saut,
+	 * il est mis collé au bord superieur de la fenetre.
 	 * Sinon sa hauteur est augmentee de la hauteur d'un saut. 
 	 */
 	public void jump() {
@@ -33,6 +40,23 @@ public class Etat {
 		}
 		else {
 			yC -= jumpH;
+		}
+	}
+	
+	/**
+	 * Methode moveDown
+	 * si l'ovale sort de la fenetre lorsqu'il descent, 
+	 * il est collé au bord inferieur de la fenetre.
+	 * Sinon sa hauteur est baissé de la hauteur d'une descente.
+	 * 
+	 * @param int yS, hauteur de la fenetre
+	 */
+	public void moveDown(int yS) {
+		if(yC + h  + dropH > yS) {
+			yC = yS - h;
+		}
+		else {
+			yC += dropH;
 		}
 	}
 	
@@ -46,5 +70,13 @@ public class Etat {
 	 */
 	public int getHauteur() {
 		return yC;
+	}
+	
+	/**
+	 * Methode setParcours
+	 * Affecte le parcours à l'atttribut de la classe
+	 */
+	public void setParcours(Parcours p) {
+		this.parc = p;
 	}
 }
