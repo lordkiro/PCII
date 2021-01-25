@@ -11,13 +11,19 @@ public class Voler extends Thread{
 	
 	/** Temps de latence entre deux descentes en millisecondes
 	 * @warning modifier coeffChute si on modifie*/
-	public static int t = 50;
+	public static int t = 200;
 	
 	/** L'etat que l'on va modifier */
 	public Etat e;
 	
 	/** L'affichage que l'on doit mettre a jour avec moveDown*/
 	public Affichage a;
+	
+	
+	public boolean running;
+	
+	
+	public Avancer av;
 	
 	/**
 	 * Constructeur Voler
@@ -40,15 +46,23 @@ public class Voler extends Thread{
 	 */
 	@Override
 	public void run() {
-		while(true) {
+		running = true;
+		while(running) {
 		      try {
 		    	  e.moveDown(Affichage.yS);
 		    	  a.revalidate(); //On force le dessin pour eviter les ralentissements
 		  		  a.repaint();
+		  		  if(e.testPerdu()) {
+		  			av.terminate();
+		  		  }
 		    	  Thread.sleep(t); 
 		    	  }
 		      catch (Exception e) { e.printStackTrace(); 
 		      }
 		}
+	}
+	
+	public void terminate() {
+		running = false;
 	}
 }
