@@ -7,7 +7,7 @@ package model;
 public class Etat {
 	
 	/** Hauteur d'un saut*/
-	public static int jumpH = 60;
+	public static int jumpH = 30;
 	
 	/** Hauteur d'une descente
 	 * @warning modifier coeffChute si on modifie*/
@@ -23,7 +23,7 @@ public class Etat {
 	public static int w = 40;
 	
 	/**Hauteur (ou longueur) de l'ovale*/
-	public static int h = 100;
+	public static int h = 120;
 	
 	/** Le parcours dans lequel on evolue*/
 	public Parcours parc;
@@ -78,5 +78,14 @@ public class Etat {
 	 */
 	public void setParcours(Parcours p) {
 		this.parc = p;
+	}
+	
+	
+	public boolean testPerdu() {
+		int i = parc.getPos() / Parcours.ecart; //indice du point déjà passe part l'ovale
+		int j = i+1; //indice du point pas encore passé
+		float coeff = (float) (parc.get(j).y - parc.get(i).y)/Parcours.ecart; 
+		float ligne = coeff * (parc.getPos()%Parcours.ecart) + parc.get(i).y;
+		return (ligne <= yC || ligne >= yC + h);
 	}
 }
