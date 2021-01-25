@@ -3,6 +3,7 @@
  */
 
 package view;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import java.awt.Color;
@@ -99,7 +100,11 @@ public class Affichage extends JPanel {
 	 * @param Graphics g, le contexte graphique
 	 */
 	public void drawScore(Graphics g) {
-		g.clearRect(40, 0, 80, 30); //On libere un rectangle ou l'on pourra ecrire sans que la ligne brisee ne gene la lecture
-		g.drawString(String.format("%d", parcours.getPos()), 40, 17); 
+		g.clearRect(110, 0, 80, 30); //On libere un rectangle ou l'on pourra ecrire sans que la ligne brisee ne gene la lecture
+		g.drawString(String.format("%d", parcours.getPos()), 110, 17); 
+	}
+	
+	public void endingscreen() {
+		JOptionPane.showMessageDialog(this, String.format("Votre score est de %d", this.parcours.getPos()), "Perdu!", JOptionPane.INFORMATION_MESSAGE);
 	}
 }
