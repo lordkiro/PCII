@@ -16,7 +16,7 @@ public class Main {
 		Voler Vol = new Voler(Modele, Vue);
 		Control Controleur = new Control(Modele, Vue);
 		Parcours Parcours = new Parcours(Modele);
-		Avancer Progression = new Avancer(Parcours, Vue);
+		Avancer Progression = new Avancer(Modele, Parcours, Vue, Controleur, Vol);
 		Vue.setParcours(Parcours);
 		
 		JFrame test = new JFrame("TP1");
