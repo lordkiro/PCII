@@ -17,6 +17,9 @@ public class Control implements MouseListener {
 	/**L'affichage lie au controleur*/
 	private final Affichage a;
 	
+	
+	public boolean running;
+	
 	/**
 	 * Construceur de Control.
 	 * Ces derniers sont ensuite affectes aux variables concernees.
@@ -30,6 +33,7 @@ public class Control implements MouseListener {
 		this.e = e;
 		this.a = aff;
 		a.setMouseListener(this);  //On affecte le controleur de l'on cree aux Listener de this.a
+		running = true;
 	}
 
 	/**
@@ -41,8 +45,11 @@ public class Control implements MouseListener {
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		this.e.jump(); /* "this." pour ne pas creer de confusion avec le parametre*/
-		a.repaint();
+		if(running) {
+			this.e.jump(); /* "this." pour ne pas creer de confusion avec le parametre*/
+			a.repaint();
+
+		}
 	}
 
 	/** Methode mousePressed */
