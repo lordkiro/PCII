@@ -4,10 +4,12 @@
 
 package model;
 
+import java.awt.Point;
+
 public class Etat {
 	
 	/** Hauteur d'un saut*/
-	public static int jumpH = 30;
+	public static int jumpH = 60;
 	
 	/** Hauteur d'une descente
 	 * @warning modifier coeffChute si on modifie*/
@@ -23,7 +25,7 @@ public class Etat {
 	public static int w = 40;
 	
 	/**Hauteur (ou longueur) de l'ovale*/
-	public static int h = 120;
+	public static int h = 100;
 	
 	/** Le parcours dans lequel on evolue*/
 	public Parcours parc;
@@ -82,10 +84,50 @@ public class Etat {
 	
 	
 	public boolean testPerdu() {
+		float pi = (float) Math.PI;
 		int i = parc.getPos() / Parcours.ecart; //indice du point déjà passe part l'ovale
 		int j = i+1; //indice du point pas encore passé
 		float coeff = (float) (parc.get(j).y - parc.get(i).y)/Parcours.ecart; 
 		float ligne = coeff * (parc.getPos()%Parcours.ecart) + parc.get(i).y;
-		return (ligne <= yC || ligne >= yC + h);
+		
+		if (ligne >= yC && ligne <= yC + h) {
+			return false;
+		}
+		else {
+			System.out.print("else \n");
+			Point centre = new Point(xC + h/2, yC - w/2);
+			int a = 0;
+			boolean flag =false;
+			while(!flag && a <13) {
+				Point ref = pointEllipse(a/6*pi);
+				
+				int x1 = ref.x + centre.x;
+				int x2 = -ref.x + centre.x;
+				
+				int y1 = ref.y - centre.y;
+				int y2 = -ref.y - centre.y;
+				
+				float ligne1 = coeff * x1 + parc.get(i).y;
+				float ligne2 = coeff * x2 + parc.get(i).y;
+				if((ligne1 >= y1 && ligne <= y2) || (ligne2 >= y1 && ligne <= y2)) {
+					System.out.print("passé \n");
+					return false;
+				}
+				a++;
+			}
+			return true;
+		}
+	}
+	
+	public Point pointEllipse(float a) {
+		float upperx = (float) ((h/2) * (w/2) * Math.cos(a));
+		float lower = (float) Math.sqrt(Math.pow(w/2, 2)*Math.pow(Math.cos(a), 2)+ Math.pow(h/2, 2)*Math.pow(Math.sin(a), 2));
+		float x = upperx / lower;
+		
+		float uppery = (float) ((h/2) * (w/2) * Math.sin(a));
+		float y = uppery / lower;
+		
+		Point res = new Point(Math.round(x),Math.round(y));
+		return res;
 	}
 }
