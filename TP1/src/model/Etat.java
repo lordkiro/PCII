@@ -98,8 +98,8 @@ public class Etat {
 			Point centre = new Point(xC + h/2, yC - w/2);
 			int a = 0;
 			boolean flag =false;
-			while(!flag && a <13) {
-				Point ref = pointEllipse(a/6*pi);
+			while(!flag && a <9) {
+				Point ref = pointEllipse(a/8*pi);
 				
 				int x1 = ref.x + centre.x;
 				int x2 = -ref.x + centre.x;
