@@ -11,7 +11,7 @@ public class Voler extends Thread{
 	
 	/** Temps de latence entre deux descentes en millisecondes
 	 * @warning modifier coeffChute si on modifie*/
-	public static int t = 200;
+	public static int t = 50;
 	
 	/** L'etat que l'on va modifier */
 	public Etat e;
@@ -19,20 +19,21 @@ public class Voler extends Thread{
 	/** L'affichage que l'on doit mettre a jour avec moveDown*/
 	public Affichage a;
 	
-	
+	/** Si le jeu est en train de tourner ou pas*/
 	public boolean running;
 	
-	
+	/** L'instance Avancer actuelle*/
 	public Avancer av;
 	
 	/**
 	 * Constructeur Voler
-	 * Affecte l'etat et l'affichage passe en parametre aux
-	 * constantes de la classe.
+	 * Affecte l'etat, l'affichage et l'instance avancer passes
+	 *  en parametre aux constantes de la classe.
 	 * 
 	 * @param Etat etat, l'etat que l'on modifiera
 	 * @param Affiachage aff, l'affichage auquel 
 	 * on demandera des mises a jour
+	 * @param Avancer av, l'instance de Avancer du jeu
 	 */
 	public Voler(Etat etat, Affichage aff) {
 		this.e = etat;
@@ -53,7 +54,8 @@ public class Voler extends Thread{
 		    	  a.revalidate(); //On force le dessin pour eviter les ralentissements
 		  		  a.repaint();
 		  		  if(e.testPerdu()) {
-		  			av.terminate();
+		  			av.terminate(); //Si l'on detecte que l'on a perdu, on appelle la fonction 
+		  							//terminate de avancer qui va stopper tout le programme
 		  		  }
 		    	  Thread.sleep(t); 
 		    	  }
@@ -61,7 +63,9 @@ public class Voler extends Thread{
 		      }
 		}
 	}
-	
+	 /**
+	  * methode terminate
+	  * Cette methode va simplement arreter ce thread*/
 	public void terminate() {
 		running = false;
 	}
