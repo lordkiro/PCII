@@ -4,7 +4,6 @@
 
 package model;
 
-import java.awt.Point;
 
 public class Etat {
 	
@@ -82,52 +81,25 @@ public class Etat {
 		this.parc = p;
 	}
 	
-	
+	/**
+	 * fonction testPerdu
+	 * calcule les ordonnées de la ligne brisee aux abscisses ou se trouve l'ovale
+	 * et renvoie si l'utilisateur a perdu ou pas.
+	 * Pour facilite la representation de la figure, on considerera que l'ovale est un rectangle
+	 * 
+	 * @return boolean , si l'utilisateur a perdu ou pas
+	 */
 	public boolean testPerdu() {
-		float pi = (float) Math.PI;
 		int i = parc.getPos() / Parcours.ecart; //indice du point déjà passe part l'ovale
 		int j = i+1; //indice du point pas encore passé
 		float coeff = (float) (parc.get(j).y - parc.get(i).y)/Parcours.ecart; 
-		float ligne = coeff * (parc.getPos()%Parcours.ecart) + parc.get(i).y;
+		for(int i1 = -w/2; i1 <= w/2; i1+=3) { //On parcourt les abscisses 3 par 3 pour raccourcir le temps de calcul
+			float ligne = coeff * ((parc.getPos()%Parcours.ecart) + i1) + parc.get(i).y; // On calcule l'ordonnée a chaque abscisse
 		
-		if (ligne >= yC && ligne <= yC + h) {
-			return false;
-		}
-		else {
-			System.out.print("else \n");
-			Point centre = new Point(xC + h/2, yC - w/2);
-			int a = 0;
-			boolean flag =false;
-			while(!flag && a <9) {
-				Point ref = pointEllipse(a/8*pi);
-				
-				int x1 = ref.x + centre.x;
-				int x2 = -ref.x + centre.x;
-				
-				int y1 = ref.y - centre.y;
-				int y2 = -ref.y - centre.y;
-				
-				float ligne1 = coeff * x1 + parc.get(i).y;
-				float ligne2 = coeff * x2 + parc.get(i).y;
-				if((ligne1 >= y1 && ligne <= y2) || (ligne2 >= y1 && ligne <= y2)) {
-					System.out.print("passé \n");
-					return false;
-				}
-				a++;
+			if (ligne >= yC && ligne <= yC + h) {
+				return false;
 			}
-			return true;
 		}
-	}
-	
-	public Point pointEllipse(float a) {
-		float upperx = (float) ((h/2) * (w/2) * Math.cos(a));
-		float lower = (float) Math.sqrt(Math.pow(w/2, 2)*Math.pow(Math.cos(a), 2)+ Math.pow(h/2, 2)*Math.pow(Math.sin(a), 2));
-		float x = upperx / lower;
-		
-		float uppery = (float) ((h/2) * (w/2) * Math.sin(a));
-		float y = uppery / lower;
-		
-		Point res = new Point(Math.round(x),Math.round(y));
-		return res;
+		return true; //Si on ne trouve pas d'abscisse ou la ligne passe dans le rectangle, l'utilisateur a perdu
 	}
 }
