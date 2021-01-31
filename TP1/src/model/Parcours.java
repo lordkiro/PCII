@@ -1,5 +1,5 @@
 /**
- * Cette classe cr�e la ligne brisee
+ * Cette classe crée la ligne brisee
  */
 
 package model;
@@ -34,7 +34,7 @@ public class Parcours extends ArrayList<Point>{
 	 * @warning modifier coeffChute si on modifie */
 	public int increPos = 2;
 
-	/** Le coefficient de la droite de "chute libre" de l'ovale (d�termin�e par calcul, a modifier si on change les parametres)*/
+	/** Le coefficient de la droite de "chute libre" de l'ovale (déterminée par calcul, a modifier si on change les parametres)*/
 	public int coeffChute = 3; //Le coefficient est positif car 0,0 est en haut a gauche de la fenetre
 	
 	/**
@@ -49,14 +49,15 @@ public class Parcours extends ArrayList<Point>{
 		e = etat;
 		
 		int i = 0;	//i representera l'indice du dernier point ajoute au parcours
-		int x = etat.xC + Etat.w/2; //On ferra commenc� le parcours au centre de l'ovale
+		int x = etat.xC + Etat.w/2; //On ferra commencé le parcours au centre de l'ovale
 		int y = etat.yC;			//dans un soucis de faisabilite du parcours
 		this.add(new Point(x, y));
 		while(x < xS) {	//On cree des points jusqu'a ce qu'on sorte de la fenetre
 			y = rand.nextInt(yS);
 			x += ecart;	
 			Point p = new Point(x, y);
-			if(suiteValide(this.get(i), p)){ //Si un point est valide (cf suitevalide) on l'ajoute, sinon on en cree un autre
+			if(suiteValide(this.get(i), p) && y > Etat.h/2 && y < yS - Etat.h/2){ //Si un point est valide (cf suitevalide) on l'ajoute, sinon on en cree un autre
+				//On veut aussi que le point que l'on crée soit à une bonne distance des bords inférieur et supérieur de la fenêtre, afin de faciliter la phase de jeu.
 				this.add(p);
 				i++; //On incremente l'indice du dernier point de la liste puisqu'on vient d'en rajouter un
 			}
@@ -98,7 +99,7 @@ public class Parcours extends ArrayList<Point>{
 					ajoutePoint();
 				}
 				return res.toArray(new Point[res.size()]); /* Pas besoin de s'embeter a aller plus loin puisqu'on affichera 
-				pas les points stock�s plus tard si il y en a.*/
+				pas les points stockés plus tard si il y en a.*/
 			}
 		}
 		return res.toArray(new Point[res.size()]);
@@ -145,7 +146,8 @@ public class Parcours extends ArrayList<Point>{
 		while (flag==false) { // tant que la suite de points n'est pas valide, on cree un nouveau point
 			int y = rand.nextInt(yS);
 			p = new Point(x, y);
-			if(suiteValide(this.get(i), p)){ //Si la suite du dernier point dans le tableau avec le point que l'on cree est valide, on sort de la boucle
+			if(suiteValide(this.get(i), p) && y > Etat.h/2 && y < yS - Etat.h/2){ //Si la suite du dernier point dans le tableau avec le point que l'on cree est valide, on sort de la boucle
+				//On veut aussi que le point que l'on crée soit à une bonne distance des bords inférieur et supérieur de la fenêtre, afin de faciliter la phase de jeu.
 				flag = true;
 			}
 		}
@@ -154,7 +156,7 @@ public class Parcours extends ArrayList<Point>{
 	
 	/** 
 	 * Fonction suiteValide
-	 * Renvoie si l'ordonn�e du point suivant est sous la droite de chute libre partant du point precedent
+	 * Renvoie si l'ordonnée du point suivant est sous la droite de chute libre partant du point precedent
 	 * 
 	 * @param Point p1, le point precedent
 	 * @param Point p2, le point que l'on test
