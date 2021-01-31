@@ -17,7 +17,7 @@ public class Control implements MouseListener {
 	/**L'affichage lie au controleur*/
 	private final Affichage a;
 	
-	
+	/** Si le jeu est en train de tourner ou pas*/
 	public boolean running;
 	
 	/**
@@ -39,7 +39,7 @@ public class Control implements MouseListener {
 	/**
 	 * Methode mouseClicked
 	 * Lors d'un clic souris, on appelle la methode jump du modele,
-	 * puis on demande a l'affichage de redessiner la fenetre.
+	 * puis on demande a l'affichage de redessiner la fenetre. Cela seulement si le jeu n'est pas perdu
 	 * 
 	 * @param MouseEvent e , un evenement de clic souris
 	 */
