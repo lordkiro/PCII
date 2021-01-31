@@ -11,7 +11,7 @@ import view.Affichage;
 public class Avancer extends Thread{
 	/** Temps de latence entre deux décallages en millisecondes
 	 * @warning modifier coeffChute si on modifie*/
-	public static int t = 200;
+	public static int t = 50;
 	
 	/** Le parcours que l'on va faire defiler */
 	public Parcours p;
@@ -19,26 +19,28 @@ public class Avancer extends Thread{
 	/** L'affichage que l'on doit mettre a jour*/
 	public Affichage a;
 	
-	
+	/** L'etat sur lequel on va influer*/
 	public Etat e;
 	
-	
+	/** L'instance actuelle de Control*/
 	public Control c;
 	
-	
+	/** Si le jeu est en train de tourner ou pas*/
 	public boolean running;
 	
-	
+	/** La classer Voler affilié au jeu actuel*/
 	public Voler vol;
 	
 	/**
 	 * Constructeur Avancer
-	 * Affecte le parcours et l'affichage passe en parametre aux
-	 * constantes de la classe.
+	 * Affecte les parametres passes aux
+	 * constantes de la classe. Et s'ajoute aux attributs de la classe Voler
 	 * 
+	 * @param Etat etat, l'etat sur lequel on va influer
 	 * @param Parcours parc, le parcours que l'on fera defiler
-	 * @param Affiachage aff, l'affichage auquel 
-	 * on demandera des mises a jour
+	 * @param Affiachage aff, l'affichage auquel on demandera des mises a jour
+	 * @param Control c, l'instance de control du jeu
+	 * @param Voler vol, l'instance de Voler du jeu
 	 */
 	public Avancer(Etat etat, Parcours parc, Affichage aff, Control c, Voler vol) {
 		this.e = etat;
@@ -63,21 +65,26 @@ public class Avancer extends Thread{
 		    	  a.revalidate(); //On force le dessin pour eviter les ralentissements
 		  		  a.repaint();
 		  		  if(e.testPerdu()) {
-		  			  terminate();
+		  			  terminate(); //Si on perd on appelle terminate pour arreter le jeu entier
 		  		  }
 		    	  Thread.sleep(t); 
-		    	  }
+	    	  }
 		      catch (Exception e) { e.printStackTrace(); 
 		      }
 		}
 	}
 	
+	/**
+	 * methode terminate
+	 * Cette methode va arreter le jeu entier, que ce soit les threads et les inputs souris,
+	 * et demander l'affichage de l'ecran de fin
+	 */
 	public void terminate() {
 		if(running) {
-			running = false;
-			c.running = false;
-			vol.terminate();
-			a.endingscreen();
+			running = false; //stop le thread de Avancer
+			c.running = false; //stop les inputs souris
+			vol.terminate(); //stop le thread de Voler
+			a.endingscreen(); //demande l'affichage de l'ecran de fin
 		}
 	}
 }
