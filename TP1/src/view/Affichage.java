@@ -104,6 +104,10 @@ public class Affichage extends JPanel {
 		g.drawString(String.format("%d", parcours.getPos()), 110, 17); 
 	}
 	
+	/**
+	 * methode endingscreen
+	 * cette methode va afficher un message a la fin de la partie avec le score de l'utilisateur
+	 */
 	public void endingscreen() {
 		JOptionPane.showMessageDialog(this, String.format("Votre score est de %d", this.parcours.getPos()), "Perdu!", JOptionPane.INFORMATION_MESSAGE);
 	}
