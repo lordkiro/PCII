@@ -51,12 +51,7 @@ public class Etat {
 	 * On decalle le decors et la piste de la valeur d'un pas sur le cote, vers la droite
 	 */
 	public void moveR() {
-		if(xC + decalX + w + decX> xS) {
-			decX = xS - w;
-		}
-		else {
-			decX += decalX;
-		}
+		decX += decalX;
 	}
 	
 	/**
@@ -65,12 +60,7 @@ public class Etat {
 	 * On decalle le decors et la piste de la valeur d'un pas sur le cote, vers la gauche
 	 */
 	public void moveL() {
-		if(xC - decalX + decX < 0) {
-			decX = 0;
-		}
-		else {
-			decX -= decalX;
-		}
+		decX -= decalX;
 	}
 
 	/**
