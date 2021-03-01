@@ -10,7 +10,7 @@ import view.Affichage;
 
 public class Avancer extends Thread{
 	/** Temps de latence entre deux décallages en millisecondes
-	 * @warning modifier coeffChute si on modifie*/
+	 * @warning modifier coeffChute si on modifie*/ //TODO
 	public static int t = 50;
 	
 	/** La piste que l'on va faire defiler */
@@ -28,13 +28,14 @@ public class Avancer extends Thread{
 	/** Si le jeu est en train de tourner ou pas*/
 	public boolean running;
 	
-	/** La classer Accelerer affilié au jeu actuel  (non implemente/utilise)*/
+	/** La classer Accelerer affilié au jeu actuel*/
 	public Accelerer acc;
 	
 	/**
 	 * Constructeur Avancer
 	 * Affecte les parametres passes aux
-	 * constantes de la classe. Et s'ajoute aux attributs de la classe Avancer
+	 * constantes de la classe. Et s'ajoute aux attributs de la classe Accelerer
+	 * On affecte aussi une vitesse de base à l'etat
 	 * 
 	 * @param Etat etat, l'etat sur lequel on va influer
 	 * @param Piste pi, la piste que l'on fera defiler
@@ -47,8 +48,8 @@ public class Avancer extends Thread{
 		this.p = pi;
 		this.a = aff;
 		this.c = c;
-		acc.av = this;
-		e.vitesse = 5;
+		acc.setAvancer(this);
+		e.vitesse = 5.;
 	}
 	
 	/**
