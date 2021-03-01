@@ -9,11 +9,11 @@ public class Temps{
 	/**Le temps restant*/
 	public int t;
 	
-	/**Le temps donné au debut du jeu*/
-	public int baseT = 40000;
+	/**Le temps donnÃ© au debut du jeu en secondes*/
+	public int baseT = 40;
 
-	/**Le temps donné a chaque checkpoint*/
-	public int tsup = 20000;
+	/**Le temps donnÃ© a chaque checkpoint en secondes*/
+	public int tsup = 20;
 	
 	/**
 	 * Constructeur Temps
@@ -36,10 +36,16 @@ public class Temps{
 	
 	/**
 	 * Methode decreaseT
-	 * le temps passe... (on decroit d'une seconde le temps)
+	 * le temps passe... (on decroit d'une seconde le temps) 
+	 * 
+	 * TEMPORAIRE : tant qu on a pas les checkpoint, si on perd apres une baisse de temps, on apelle addTime
 	 */
 	public void decreaseT() {
-		this.t -= 1000;
+		if(t-1 <= 0) {
+			addTime();
+		}else{
+			this.t -= 1;
+		}
 	}
 	
 	/**
