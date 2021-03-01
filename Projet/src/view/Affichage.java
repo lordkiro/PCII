@@ -3,6 +3,7 @@
  */
 
 package view;
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -11,6 +12,10 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.text.DecimalFormat;
 
 import control.Control;
 import model.Etat;
@@ -30,18 +35,28 @@ public class Affichage extends JPanel {
 	/**L'etat que va afficher notre fenetre*/
 	protected final Etat etat;
 
+	/**La piste du jeu*/
 	public Piste p;
 	
+	/**L'image qui representara  le joueur*/
+	public BufferedImage image;
 	
 	/** 
 	 * Constructeur Affichage
 	 * On donne la taille ideale de notre fenetre puis
-	 * on affecte l'etat passe en argument a la variable. 
+	 * on affecte l'etat passe en argument a la variable.
+	 * On affecte aussi l'image choisie a la variable appropriee 
 	 * 
 	 * @param Etat e : l'etat que notre fenetre va afficher
 	 */
 	public Affichage(Etat e) {
-		setPreferredSize(new Dimension(xS, yS));
+		setPreferredSize(new Dimension(xS, yS)); //On rentre les dimensions voulues pour la fenetre
+		try {
+			image = ImageIO.read(new File("vehicule.png")); //On charge l'image appelee vehicule.png
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			System.out.print("L'image n'a pas pu etre chargee"); //Si on n'arrive pas a charger l'image, on prévient l'utilisateur
+		}
 		etat = e;
 	}
 
@@ -63,7 +78,13 @@ public class Affichage extends JPanel {
 		colorGround(points, g);
 		drawHorizon(g);
 		colorSky(g);
+		drawDecor(etat.decor, g);
+		colorDecor(etat.decor, g);
+		writeTemps(g);		//On ecrit apres tous les dessins et coloriages afin que le texte soit par dessus
+		writeVitesse(g);
+		writeScore(g);
 		g.drawOval(etat.xC, etat.yC, etat.w, etat.h); //techniquement on devrait pouvoir avoir une methode sans parametre...
+		//g.drawImage(image, etat.xC, etat.yC, null); //On commente/decommente pour avoir d'affiché l'image ou pas. TODO: dimensions(centrage) et transparence
 	}
 	
 	/**
@@ -146,7 +167,77 @@ public class Affichage extends JPanel {
 		g.drawLine(0, Piste.horizon, xS, Piste.horizon);
 	}
 	
+	/**
+	 * Methode drawDecor
+	 * On dessine les montagnes en fond.
+	 * On les decale legerement quand on bouge pour donnerune impression de profondeur
+	 * 
+	 * @param Point[] dec, les sommets des montagnes du decor
+	 * @param Graphics g, le contexte graphique actuel
+	 */
+	public void drawDecor(Point[] dec, Graphics g) {
+		Color temp = g.getColor();
+		g.setColor(Color.lightGray);		
+		for(int i = 0; i< dec.length; i++) {	
+			g.drawLine((int)Math.round(dec[i].x-etat.largeurM/2-0.3*etat.decX), Piste.horizon, (int)Math.round(dec[i].x-0.3*etat.decX), dec[i].y);  //+0.3*etat.decX pour sensation de profondeur
+			g.drawLine((int)Math.round(dec[i].x-0.3*etat.decX), dec[i].y, (int)Math.round(dec[i].x+etat.largeurM/2-0.3*etat.decX), Piste.horizon);
+		}
+		g.setColor(temp); //On remet ensuite le contexte graphique en noir
+	}
 	
+	/**
+	 * Methode colorDecor
+	 * On remplit les montagnes en fond.
+	 * On les decale legerement quand on bouge pour donnerune impression de profondeur
+	 * 
+	 * @param Point[] dec, les sommets des montagnes du decor
+	 * @param Graphics g, le contexte graphique actuel
+	 */
+	public void colorDecor(Point[] dec, Graphics g) {
+		Color temp = g.getColor();
+		g.setColor(Color.lightGray);	
+		for(int i = 0; i< dec.length; i++) {	
+			int[] x = {(int)Math.round(dec[i].x-etat.largeurM/2-0.3*etat.decX), (int)Math.round(dec[i].x-0.3*etat.decX), (int)Math.round(dec[i].x+etat.largeurM/2-0.3*etat.decX)};
+			int[] y = {Piste.horizon, dec[i].y, Piste.horizon};
+			g.fillPolygon(x, y, x.length);
+		}
+		g.setColor(temp); //On remet ensuite le contexte graphique en noir
+	}
+	
+	/**
+	 * Methode writeTemps
+	 * On ecrit le temps restant avant la in du jeu
+	 * 
+	 * @param Graphics g, le contexte graphique actuel
+	 */
+	public void writeTemps(Graphics g) {
+		g.drawString("Temps restant: ", 700, 725);
+		g.drawString(String.format("%d", etat.t.t)+" sec", 700, 750); 
+	}
+	
+	/**
+	 * Methode writeVitesse
+	 * On ecrit la vitesse actuelle du joueur
+	 * 
+	 * @param Graphics g, le contexte graphique actuel
+	 */
+	public void writeVitesse(Graphics g) {
+		DecimalFormat df = new DecimalFormat("#.##");
+		g.drawString("Vitesse actuelle: ", 100, 725);
+		g.drawString(String.format("%s", df.format(etat.vitesse*10))+" km/h", 100, 750);
+	}
+	
+	/**
+	 * Methode writeTemps
+	 * On ecrit le score actuelle du joueur
+	 * 
+	 * @param Graphics g, le contexte graphique actuel
+	 */
+	public void writeScore(Graphics g) {
+		DecimalFormat df = new DecimalFormat("#.##");
+		g.drawString("Distance parcourue: ", 15, 15);
+		g.drawString(String.format("%s", df.format(p.position/100))+" km", 130, 15);
+	}
 	/**
 	 * Methode setPiste
 	 * Lie le parcours dans lequel on a evoluer a l'attribut concerne
