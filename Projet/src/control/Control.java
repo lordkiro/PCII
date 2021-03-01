@@ -26,6 +26,9 @@ public class Control implements KeyListener {
 	/**La instance Deplacer du jeu*/
 	public Deplacer dep;
 	
+	/**L'instance de Accelerer du jeu*/
+	public Accelerer acc;
+	
 	/**Constructeur Control
 	 * 
 	 * On affecte les parametres aux variables de la classes, met le booleen running a true et on focus l'ecoute dans la fenetre de l'affichage
@@ -62,13 +65,12 @@ public class Control implements KeyListener {
 		// TODO Auto-generated method stub
 		if(running) {
 			//System.out.print(e.getKeyCode());
-			if(e.getKeyCode() == KeyEvent.VK_D) {
+			if(e.getKeyCode() == KeyEvent.VK_RIGHT) {     
 				this.dep.depD = true;
 			}
-			else if(e.getKeyCode() == KeyEvent.VK_Q) {
+			else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
 				this.dep.depG = true;
 			}
-			//a.repaint();
 		}
 	}
 
@@ -82,10 +84,10 @@ public class Control implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getKeyCode() == KeyEvent.VK_D) {
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			this.dep.depD = false;
 		}
-		else if(e.getKeyCode() == KeyEvent.VK_Q) {
+		else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
 			this.dep.depG = false;
 		}
 	}
