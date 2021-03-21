@@ -73,6 +73,7 @@ public class Affichage extends JPanel {
 	public void paint(Graphics g) {
 		super.paint(g);
 		Point[] points = p.getPiste();
+		Point[] pc = p.getPC();
 		drawPiste(points, g);
 		colorPiste(points, g);
 		colorGround(points, g);
@@ -80,6 +81,8 @@ public class Affichage extends JPanel {
 		colorSky(g);
 		drawDecor(etat.decor, g);
 		colorDecor(etat.decor, g);
+		drawPC(pc, g);
+		colorPC(pc,g);
 		writeTemps(g);		//On ecrit apres tous les dessins et coloriages afin que le texte soit par dessus
 		writeVitesse(g);
 		writeScore(g);
@@ -183,6 +186,40 @@ public class Affichage extends JPanel {
 			g.drawLine((int)Math.round(dec[i].x-0.3*etat.decX), dec[i].y, (int)Math.round(dec[i].x+etat.largeurM/2-0.3*etat.decX), Piste.horizon);
 		}
 		g.setColor(temp); //On remet ensuite le contexte graphique en noir
+	}
+	
+	/**
+	 * Methode drawPC
+	 * TODO
+	 * 
+	 * @param Point[] PC, les sommets des montagnes du decor
+	 * @param Graphics g, le contexte graphique actuel
+	 */
+	public void drawPC(Point[] PC, Graphics g) {
+		Color temp = g.getColor();
+		g.setColor(Color.black);		
+		for(int i = 0; i< PC.length; i++) {	
+			g.drawRect(PC[i].x, PC[i].y, 2*etat.w, 10);
+		}
+		g.setColor(temp); //On remet ensuite le contexte graphique en noir
+	}
+	
+	
+	/**
+	 * Methode colorPC
+	 * TODO
+	 *  
+	 * @param Graphics g, le contexte graphique
+	 */
+	public void colorPC(Point[] pc, Graphics g) {
+		Color temp = g.getColor();
+		g.setColor(Color.black);//Comme precedement on sauvegarde la couleur du contexte graphique, puis on la change a vert
+		for(Point point : pc) {
+			int[] x = {point.x, point.x,  point.x + etat.w*2, point.x + etat.w*2};	//On prend les points qui sont aux extremites hors de la piste (a l'horizon a gauche et a droite, en bas de la fenetre a droite et a gauche)
+			int[] y = {point.y, point.y+10, point.y+10, point.y};
+			g.fillPolygon(x, y, x.length);
+		}
+		g.setColor(temp);
 	}
 	
 	/**
