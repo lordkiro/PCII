@@ -63,6 +63,7 @@ public class Avancer extends Thread{
 		while(running) {
 		      try {
 		    	  p.setPos();
+		    	  e.passePC();
 		    	  a.revalidate(); //On force le dessin pour eviter les ralentissements
 		  		  a.repaint();
 		  		  if(e.testPerdu()) {
