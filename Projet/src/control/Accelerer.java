@@ -79,7 +79,7 @@ public class Accelerer extends Thread{
 			c.running = false; //stop les inputs souris
 
 			/**TODO implementer les terminate des autres threads*/
-			/*vol.terminate(); //stop le thread de Voler
+			/*
 			a.endingscreen(); //demande l'affichage de l'ecran de fin*/
 		}
 	}
