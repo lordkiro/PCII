@@ -38,7 +38,7 @@ public class Etat {
 	public double acceleration;
 
 	/**L'aceleration quand on est sur la piste. (coefficient)*/
-	public double maxAcc = 1.002;
+	public double maxAcc = 1.008;
 
 	/**Les mesures de la fenetre*/
 	public int xS= 800;
@@ -62,6 +62,11 @@ public class Etat {
 	/**Largeur d'une montagne dans le decor*/
 	public int largeurM = 90;
 	
+	/**Vitesse perdue lors d'une collision*/
+	public double vCol = 5.5;
+		
+	/** Liste des checkpoints passes*/
+	public ArrayList<Point> PC;
 	/**
 	 * Constructeur Etat
 	 * on initialise simplement decX a 0, et on cree le decor
@@ -69,6 +74,7 @@ public class Etat {
 	public Etat() {
 		decX = 0;
 		decor = setDecor();
+		PC = new ArrayList<Point>();
 	}
 
 	/**
@@ -112,7 +118,7 @@ public class Etat {
 	 * TODO
 	 */
 	public boolean testPerdu() {
-		return t.testPerdu(); //temporaire, il y en aura d'autres
+		return t.testPerdu() || vitesseNulle(); //temporaire, il y en aura d'autres
 	}
 
 	/**
@@ -126,18 +132,38 @@ public class Etat {
 	public double potAcc() {
 		int i = p.getPos() / Piste.ecart; //indice du point déjà passe part l'ovale
 		int j = i+1; //indice du point pas encore passé
-		double coeff = (p.get(j).x - p.get(i).x)/Piste.ecart; 	/**TODO not working*/
+		double coeff = (p.get(i).x - p.get(j).x)/Piste.ecart; 	/**TODO not working*/
 		for(int i1 = -w/2; i1 <= w/2; i1+=3) {
 			double ligne = coeff * ((p.getPos()%Piste.ecart) + i1) + p.get(i).x; // On calcule l'ordonnée a chaque abscisse
-			if(ligne+decX >= xC-w/2 && ligne+decX+w/2 <= xC+w) {//w/2 est la largeur de la route
+			if(ligne-decX >= xC-w && ligne-decX+w <= xC+w*2) {//w est la largeur de la route
 				System.out.print("acc \n");
 				return maxAcc;
 			}
 		}
 		System.out.print("dec \n");
-		return 1.; //Pour le debuggage on ne ralenti pas hors de la piste
+		return 0.98; //Pour le debuggage on ne ralenti pas hors de la piste
 	}
-
+	
+	/**
+	 * Fonction passePC
+	 * 
+	 * incremente le temps si on passe dans un checkpoint.
+	 * 
+	 */
+	public void passePC() {
+		Point[] PCV = p.getPC();
+		for(Point point : PCV) {
+			if(point.y - yC <= h  && point.y+10 - yC >= 0 && point.x - decX + 2*w >=  xC && point.x - decX <= xC + w ) {
+				Point P = new Point(point.x - decX, point.y - p.getPos());	
+				if(!PC.contains(P)) {  //parfois le temps s'ajoute plusieurs fois. PB d'enregistrement des points?
+						t.addTime();
+						PC.add(P);
+				}
+			}
+		}
+	}
+	
+	
 	/**
 	 * Methode accelerer
 	 * On calcule l'acceleration potentielle du joueur, puis si cela le fait aller plus vite
@@ -172,5 +198,18 @@ public class Etat {
 			i++;
 		}
 		return res.toArray(new Point[res.size()]);
+	}
+	
+	/**TODO*/
+	public void collision() {
+		if ((vitesse - vCol) >0) {
+			vitesse -= vCol;
+		}else {
+			vitesse = 0.;
+		}
+	}
+	
+	public boolean vitesseNulle() {
+		return vitesse <= 0.;
 	}
 }
