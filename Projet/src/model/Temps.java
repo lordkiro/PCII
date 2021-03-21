@@ -42,7 +42,7 @@ public class Temps{
 	 */
 	public void decreaseT() {
 		if(t-1 <= 0) {
-			addTime();
+			this.t = 0;
 		}else{
 			this.t -= 1;
 		}
