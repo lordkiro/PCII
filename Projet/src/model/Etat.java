@@ -38,7 +38,7 @@ public class Etat {
 	public double acceleration;
 
 	/**L'aceleration quand on est sur la piste. (coefficient)*/
-	public double maxAcc = 1.008;
+	public double maxAcc = 0.1;
 
 	/**Les mesures de la fenetre*/
 	public int xS= 800;
@@ -59,14 +59,18 @@ public class Etat {
 	/**Ecart minimal entre deux sommets*/
 	public int ecart = 80;
 	
-	/**Largeur d'une montagne dans le decor*/
+	/** Largeur d'une montagne dans le decor*/
 	public int largeurM = 90;
 	
-	/**Vitesse perdue lors d'une collision*/
-	public double vCol = 5.5;
+	/** Vitesse perdue lors d'une collision*/
+	public double vCol = 2.5;
 		
 	/** Liste des checkpoints passes*/
 	public ArrayList<Point> PC;
+	
+	/** Constante de ralentissement que l'on multipliera à la distance entre le vehicule et la piste*/
+	public double slowCst = -0.0005;
+	
 	/**
 	 * Constructeur Etat
 	 * on initialise simplement decX a 0, et on cree le decor
@@ -113,12 +117,13 @@ public class Etat {
 	
 	/**
 	 * Fonction testPerdu
-	 * Ici on renverra true si l'une des conditions de defaite est remplie (non implemente/utilise)
 	 * 
-	 * TODO
+	 * on renvoie si la vitesse ou le temps restant est nul.
+	 * 
+	 * @return boolean, si on a perdu ou pas
 	 */
 	public boolean testPerdu() {
-		return t.testPerdu() || vitesseNulle(); //temporaire, il y en aura d'autres
+		return t.testPerdu() || vitesseNulle(); 
 	}
 
 	/**
@@ -133,32 +138,57 @@ public class Etat {
 		int i = p.getPos() / Piste.ecart; //indice du point déjà passe part l'ovale
 		int j = i+1; //indice du point pas encore passé
 		double coeff = (p.get(i).x - p.get(j).x)/Piste.ecart; 	/**TODO not working*/
+		double decalDroite = 0;
+		double decalGauche = 0;
 		for(int i1 = -w/2; i1 <= w/2; i1+=3) {
 			double ligne = coeff * ((p.getPos()%Piste.ecart) + i1) + p.get(i).x; // On calcule l'ordonnée a chaque abscisse
-			if(ligne-decX >= xC-w && ligne-decX+w <= xC+w*2) {//w est la largeur de la route
-				System.out.print("acc \n");
+			decalDroite = ligne-decX -(xC-w);
+			decalGauche = xC+w*2 -(ligne-decX+w);
+			if(decalDroite >= 0 && decalGauche >= 0) {//w est la largeur de la route
 				return maxAcc;
 			}
 		}
-		System.out.print("dec \n");
-		return 0.98; //Pour le debuggage on ne ralenti pas hors de la piste
+		return -Math.max(coeff * ((p.getPos()%Piste.ecart)) + p.get(i).x-decX -(xC-w), xC+w*2 -(coeff * ((p.getPos()%Piste.ecart)) + p.get(i).x-decX+w)); 
 	}
 	
 	/**
 	 * Fonction passePC
 	 * 
-	 * incremente le temps si on passe dans un checkpoint.
-	 * 
+	 * incremente le temps si on passe dans un checkpoint
 	 */
 	public void passePC() {
 		Point[] PCV = p.getPC();
-		for(Point point : PCV) {
-			if(point.y - yC <= h  && point.y+10 - yC >= 0 && point.x - decX + 2*w >=  xC && point.x - decX <= xC + w ) {
-				Point P = new Point(point.x - decX, point.y - p.getPos());	
-				if(!PC.contains(P)) {  //parfois le temps s'ajoute plusieurs fois. PB d'enregistrement des points?
+		for(Point point : PCV) {   //On effectue les tests pour chaque point dans la liste des points visibles.
+			/*System.out.print((point.y - yC - h/2 <= h) + "\n");
+			System.out.print((point.y + 10 - yC >= 0) + "\n");
+			System.out.print((point.x - (decX) + 2*w >=  xC) + "\n");
+			if 	(!(point.x - (decX) + 2*w >=  xC)){
+				System.out.print(point.x + " - ");
+				System.out.print(decX  + " + ");
+				System.out.print( 2*w + " >= ");
+				System.out.print( xC + "\n");
+			}
+			System.out.print((point.x - (decX-w/4) - w/2 <= xC + 2*w) + "\n");
+			if 	(!(point.x - (decX-w/4) <= xC + 2*w)){
+				System.out.print(point.x + " - ");
+				System.out.print(decX-w/4  + " <= ");
+				System.out.print( 2*w + " + ");
+				System.out.print( xC + "\n");
+			}
+			System.out.print("Passe pas? \n");*/
+			if(point.y - yC - h/2- Math.round(vitesse) <= h && point.y + 10 - yC >= 0 && point.x - (decX) + 2*w  >=  xC && point.x - (decX/*-w/4*/) /*- w/2*/<= xC + 2*w ) {
+				//Point P = new Point(point.x - decX, point.y - p.getPos());	//On soustraie decX et la pos pour avoir les coordonnees du point par rapport au depart.
+				//System.out.print("Si");
+				t.addTime();
+				p.pointsControl.remove(0);
+				/*if(!PC.contains(P)) {  //parfois le temps s'ajoute plusieurs fois. PB d'enregistrement des points?
 						t.addTime();
 						PC.add(P);
-				}
+						System.out.print("et la");
+				}*/
+			}
+			if(point.y > yS) {
+				p.pointsControl.remove(0);
 			}
 		}
 	}
@@ -171,13 +201,39 @@ public class Etat {
 	 */
 	public void accelere() {
 		double acc = potAcc();
-		if(vitesse*acc >= vitesseM) {
-			vitesse = vitesseM;
-		}else{
-			vitesse *= acc;
+		if(acc > 0.) {	
+			if(vitesse+acc >= vitesseM) {
+				vitesse = vitesseM;
+			}else{
+				vitesse += acc;
+			}
+		}else {
+			if(vitesse - acc * slowCst <= 0) {
+				vitesse = 0;
+			}else{
+				vitesse -= acc * slowCst;
+			}
 		}
+	
 	}
 	
+	/**
+	 * Fonction percuteObs
+	 * 
+	 * incremente le temps si on percute un obstacle
+	 */
+	public void percuteObs() {
+		Point[] ObsV = p.getObs();
+		for(Point point : ObsV) {
+			if(point.y - yC - h/2- Math.round(vitesse) <= h && point.y + 10 - yC >= 0 && point.x - (decX) + 2*w  >=  xC && point.x - (decX/*-w/4*/) /*- w/2*/<= xC + 2*w ) {
+				p.obstacles.remove(0);
+				collision();
+			}
+			if(point.y > yS) {
+				p.obstacles.remove(0);
+			}
+		}
+	}
 	/**
 	 * Methode setDecor
 	 * On pose des points de facon legerement aleatoirepour donner des montagnes en fond. On fait quand meme en sorte que les montagnes ne se chevauchent pas
@@ -200,7 +256,11 @@ public class Etat {
 		return res.toArray(new Point[res.size()]);
 	}
 	
-	/**TODO*/
+	/**
+	 * Methode collision
+	 * 
+	 * on reduit la vitesse lors d'une collision
+	 */
 	public void collision() {
 		if ((vitesse - vCol) >0) {
 			vitesse -= vCol;
@@ -209,6 +269,13 @@ public class Etat {
 		}
 	}
 	
+	/**
+	 * Fonction vitesseNulle
+	 * 
+	 * On renvoie si la vitesse est nulle ou negative
+	 * 
+	 * @return boolean, si la vitesse est nulle ou negative
+	 */
 	public boolean vitesseNulle() {
 		return vitesse <= 0.;
 	}
