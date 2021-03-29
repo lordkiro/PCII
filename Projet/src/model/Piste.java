@@ -31,7 +31,7 @@ public class Piste  extends ArrayList<Point>{
 		public static int nbPVisibles = 5;
 		
 		/**La hauteur de l'horizon dans la fenetre*/
-		public static int horizon = 150; /**TODO*/
+		public static int horizon = 150; 
 		
 		/** Ecart entre deux points */
 		public static int ecart = (xS-horizon)/nbPVisibles;
@@ -40,7 +40,7 @@ public class Piste  extends ArrayList<Point>{
 		public static int maxDiffX = 150;
 		
 		/** Interval minimum entre deux obstacles*/
-		public static int intObs;
+		public static int interObs;
 		
 		/** Intervalle entre deux points de controles. En nombre de segments*/
 		public static int interPC;
@@ -54,8 +54,14 @@ public class Piste  extends ArrayList<Point>{
 		/** Compte de segment créés sans PC*/
 		private int decomptePC;
 		
+		/** Compte de segment créés sans obstacle*/
+		private int decompteObs;
+		
 		/** Liste des numeros de segments des PC*/
 		public ArrayList<Integer> pointsControl;
+		
+		/** Liste des numeros de segments des obstacles*/
+		public ArrayList<Point> obstacles;
 		
 		/**
 		 * Constructeur Piste
@@ -69,7 +75,7 @@ public class Piste  extends ArrayList<Point>{
 			e = etat;
 			
 			int i = 0;	//i representera l'indice du dernier point ajoute a la piste
-			int x = etat.xC + etat.w/4; //On ferra commencé la piste au centre de l'ovale
+			int x = etat.xC - etat.w/4; //On ferra commencé la piste au centre de l'ovale
 			int y = etat.yC+etat.h/2;			//dans un soucis de faisabilite de la piste
 			this.add(new Point(x, y));
 			while(i < nbPVisibles) {	//On cree des points jusqu'a ce qu'on sorte de la fenetre
@@ -86,10 +92,12 @@ public class Piste  extends ArrayList<Point>{
 			}
 			e.setPiste(this);//on ajoute la piste a l'etat du jeu
 			position = 0; //initialisation du score a 0
-			intObs = 1000;
+			interObs = 10;
 			interPC = 7;
 			decomptePC = interPC - nbPVisibles;
+			decompteObs = interObs - nbPVisibles;
 			pointsControl = new ArrayList<Integer>();
+			obstacles = new ArrayList<Point>();
 			diff = 1;
 		}
 
@@ -136,6 +144,7 @@ public class Piste  extends ArrayList<Point>{
 						}else {
 							decomptePC -= 1;
 						}
+						
 					}
 					return res.toArray(new Point[res.size()]); /* Pas besoin de s'embeter a aller plus loin puisqu'on affichera 
 					pas les points stockés plus tard si il y en a.*/
@@ -147,7 +156,7 @@ public class Piste  extends ArrayList<Point>{
 		/**
 		 * Fonction getPC
 		 * 
-		 * @return Point[] Le point le plus a gauche des PC visibles
+		 * @return Point[] Les points le plus a gauche de chaque PC visibles
 		 */
 		
 		public Point[] getPC() {
@@ -155,11 +164,28 @@ public class Piste  extends ArrayList<Point>{
 			for(int i : this.pointsControl) {
 				Point p = this.get(i);
 				if(estVisible(new Point(p.x - e.decX, p.y + position))) {
-					res.add(new Point(p.x-e.w/2-e.decX, p.y+position));
+					res.add(new Point(p.x-e.w/2-e.decX, p.y+position)); //Comme precedement, on ajoute le point aux coordonnees ou on veut le voir
 				}
 			}
 			return res.toArray(new Point[res.size()]);
 		}
+		
+		/**
+		 * Fonction getObs
+		 * 
+		 * @return Point[] Les points le plus a gauche de chaque obstacles visibles
+		 */
+		
+		public Point[] getObs() {
+			ArrayList<Point> res = new ArrayList<Point>();
+			for(Point p : this.obstacles) {
+				if(estVisible(new Point(p.x - e.decX, p.y + position))) {
+					res.add(new Point(p.x-e.w/2-e.decX, p.y+position)); //Comme precedement, on ajoute le point aux coordonnees ou on veut le voir
+				}
+			}
+			return res.toArray(new Point[res.size()]);
+		}
+		
 		/**
 		 * Fonction getPos
 		 * Renvoie le score (position par rapport au depart) sur la piste actuel
@@ -186,7 +212,7 @@ public class Piste  extends ArrayList<Point>{
 		 * @return boolean , Si le point est visible ou non
 		 */
 		public boolean estVisible(Point p) {
-			return p.y <= xS && p.y >= horizon;
+			return p.y <= yS && p.y >= horizon;
 		}
 		
 		/**
@@ -207,6 +233,14 @@ public class Piste  extends ArrayList<Point>{
 				}
 			}
 			add(p);
+			if(this.decompteObs - 1 == 0) {
+				int xleft = rand.nextInt(175)-p.x;
+				obstacles.add(new Point (xleft, p.y+ rand.nextInt(ecart)));
+				decompteObs = (int) Math.round(interObs / (diff+1)); /**TODO modifier doc*/
+			}else {
+				decompteObs -= 1;
+			}
+			System.out.print(decompteObs + "\n");
 		}
 		
 		/** 
