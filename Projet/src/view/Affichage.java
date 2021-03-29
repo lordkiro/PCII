@@ -74,6 +74,7 @@ public class Affichage extends JPanel {
 		super.paint(g);
 		Point[] points = p.getPiste();
 		Point[] pc = p.getPC();
+		Point[] obs = p.getObs();
 		drawPiste(points, g);
 		colorPiste(points, g);
 		colorGround(points, g);
@@ -83,6 +84,8 @@ public class Affichage extends JPanel {
 		colorDecor(etat.decor, g);
 		drawPC(pc, g);
 		colorPC(pc,g);
+		drawObs(obs, g);
+		colorObs(obs, g);
 		writeTemps(g);		//On ecrit apres tous les dessins et coloriages afin que le texte soit par dessus
 		writeVitesse(g);
 		writeScore(g);
@@ -190,9 +193,9 @@ public class Affichage extends JPanel {
 	
 	/**
 	 * Methode drawPC
-	 * TODO
+	 * On dessine les points de controle
 	 * 
-	 * @param Point[] PC, les sommets des montagnes du decor
+	 * @param Point[] PC, les points en haut a gauche des points des bandes representants les points de controle
 	 * @param Graphics g, le contexte graphique actuel
 	 */
 	public void drawPC(Point[] PC, Graphics g) {
@@ -207,7 +210,7 @@ public class Affichage extends JPanel {
 	
 	/**
 	 * Methode colorPC
-	 * TODO
+	 * On represente les points de controle par des bandes noir au sol
 	 *  
 	 * @param Graphics g, le contexte graphique
 	 */
@@ -215,8 +218,42 @@ public class Affichage extends JPanel {
 		Color temp = g.getColor();
 		g.setColor(Color.black);//Comme precedement on sauvegarde la couleur du contexte graphique, puis on la change a vert
 		for(Point point : pc) {
-			int[] x = {point.x, point.x,  point.x + etat.w*2, point.x + etat.w*2};	//On prend les points qui sont aux extremites hors de la piste (a l'horizon a gauche et a droite, en bas de la fenetre a droite et a gauche)
-			int[] y = {point.y, point.y+10, point.y+10, point.y};
+			int[] x = {point.x, point.x,  point.x + etat.w*2, point.x + etat.w*2};	
+			int[] y = {point.y, point.y+10, point.y+10, point.y}; //La bande aura une largeur (huteur) de 10
+			g.fillPolygon(x, y, x.length);
+		}
+		g.setColor(temp);
+	}
+	
+	/**
+	 * Methode drawObs
+	 * On dessine les points de controle
+	 * 
+	 * @param Point[] PC, les points en haut a gauche des points des bandes representants les points de controle
+	 * @param Graphics g, le contexte graphique actuel
+	 */
+	public void drawObs(Point[] Obs, Graphics g) {
+		Color temp = g.getColor();
+		g.setColor(Color.LIGHT_GRAY);		
+		for(int i = 0; i< Obs.length; i++) {	
+			g.drawRect(Obs[i].x, Obs[i].y, 2*etat.w, 15);
+		}
+		g.setColor(temp); //On remet ensuite le contexte graphique en noir
+	}
+	
+	
+	/**
+	 * Methode colorObs
+	 * On represente les points de controle par des bandes noir au sol
+	 *  
+	 * @param Graphics g, le contexte graphique
+	 */
+	public void colorObs(Point[] Obs, Graphics g) {
+		Color temp = g.getColor();
+		g.setColor(Color.LIGHT_GRAY);//Comme precedement on sauvegarde la couleur du contexte graphique, puis on la change a vert
+		for(Point point : Obs) {
+			int[] x = {point.x, point.x,  point.x + etat.w*2, point.x + etat.w*2};	
+			int[] y = {point.y, point.y+15, point.y+15, point.y}; //La bande aura une largeur (huteur) de 10
 			g.fillPolygon(x, y, x.length);
 		}
 		g.setColor(temp);
@@ -283,5 +320,9 @@ public class Affichage extends JPanel {
 	 */
 	public void setPiste(Piste p) {
 		this.p = p;
+	}
+	public boolean ready() {
+		JOptionPane d = new JOptionPane();
+		return (JOptionPane.showConfirmDialog( this, "Vous allez jouer à un jeu contre la montre. Passez les checkpoints pour recharger votre temps. Evitez les obstacles et l'herbe pour ne pas perdre de vitesse.", "Accueil",  JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION);
 	}
 }
