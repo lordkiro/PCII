@@ -55,6 +55,7 @@ public class Avancer extends Thread{
 	/**
 	 * Methode run
 	 * Boucle infini qui va appeler setPos de la classe Piste
+	 * On en profite pour verifier si l'on passe par un point de controle
 	 * toutes les t millisecondes. 
 	 */
 	@Override
@@ -64,6 +65,7 @@ public class Avancer extends Thread{
 		      try {
 		    	  p.setPos();
 		    	  e.passePC();
+		    	  e.percuteObs();
 		    	  a.revalidate(); //On force le dessin pour eviter les ralentissements
 		  		  a.repaint();
 		  		  if(e.testPerdu()) {
