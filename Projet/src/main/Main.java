@@ -6,6 +6,7 @@ import control.Accelerer;
 import control.Avancer;
 import control.Control;
 import control.Deplacer;
+import control.Timer;
 import model.Etat;
 import model.Piste;
 import model.Temps;
@@ -18,10 +19,10 @@ public class Main {
 		Deplacer Deplacer = new Deplacer(Modele, Vue);
 		Control Controleur = new Control(Modele, Vue, Deplacer);
 		Piste P = new Piste(Modele);
-		Accelerer Acc = new Accelerer(Modele, Vue);
+		Accelerer Acc = new Accelerer(Modele, Vue, Controleur);
 		Avancer Avancer = new Avancer(Modele, P, Vue, Controleur, Acc);
-		@SuppressWarnings("unused")
 		Temps Montre = new Temps(Modele);
+		Timer Chrono = new Timer(Modele, Vue, P, Montre);
 		Vue.setPiste(P);
 		Acc.setAvancer(Avancer);
 		
@@ -34,5 +35,7 @@ public class Main {
 		
 		Deplacer.start();
 		Avancer.start();
+		Acc.start();
+		Chrono.start();
 	}
 }
