@@ -33,9 +33,11 @@ public class Main {
 		test.addKeyListener(Controleur);
 		test.setVisible(true);
 		
-		Deplacer.start();
-		Avancer.start();
-		Acc.start();
-		Chrono.start();
+		if(Vue.ready()) {
+			Deplacer.start();
+			Avancer.start();
+			Acc.start();
+			Chrono.start();
+		}
 	}
 }
