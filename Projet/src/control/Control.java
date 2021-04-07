@@ -47,6 +47,8 @@ public class Control implements KeyListener {
 	
 	/**
 	 * Methode KeyTyped
+	 * 
+	 * Pas utilisee
 	 */
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -62,9 +64,7 @@ public class Control implements KeyListener {
 	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
 		if(running) {
-			//System.out.print(e.getKeyCode());
 			if(e.getKeyCode() == KeyEvent.VK_RIGHT) {     
 				this.dep.depD = true;
 			}
@@ -90,6 +90,15 @@ public class Control implements KeyListener {
 		else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
 			this.dep.depG = false;
 		}
+	}
+	
+	/**
+	 * Methode terminate
+	 * 
+	 * set running a faux
+	 */
+	public void terminate() {
+		running = false;
 	}
 
 }
