@@ -67,7 +67,7 @@ public class Piste  extends ArrayList<Point>{
 		 * Constructeur Piste
 		 * Affecte l'etat en parametre a l'attribut concerne, puis cree la piste visible quand on ouvre la fenetre
 		 * en verifiant que les points ont des positions valides, puis lie lla piste a l'etat et initialise
-		 * le score a 0.
+		 * le score a 0, et les intervalles pour les obstacles et points de control, ainsi que les decomptes. On initialise la difficulté à 1.
 		 * 
 		 * @param Etat etat, l'etat auquel on va lier la piste
 		 */
@@ -105,7 +105,8 @@ public class Piste  extends ArrayList<Point>{
 		 * Fonction getPiste
 		 * Renvoie la liste de points qui forment les segments visibles dans la fenetre, du point de vue de sujet.
 		 * Comme cette fonction est appelee a chaque fois que la courbe avance, on en profite pour la faire ajouter des points quand le
-		 * dernier point est bientot vu par la fenetre afin d'avoir une impression de ligne infinie
+		 * dernier point est bientot vu par la fenetre afin d'avoir une impression de ligne infinie.
+		 * Quand on ajoute un point, on vérifie si il doit posseder un point de control. Si non, on decremente le decompte.
 		 * 
 		 * @return Point[] La liste des points de la piste actuel
 		 */
@@ -137,12 +138,12 @@ public class Piste  extends ArrayList<Point>{
 					res.add(pr2);
 					if(pi.y + e.vitesse*1.5 + position > horizon && i == size()-1) { //on met increPos*1.5 pour regarder un peu plus loin que la prochaine etape
 						ajoutePoint();
-						if(this.decomptePC - 1 == 0) {
+						if(this.decomptePC - 1 == 0) {  //Si le decompte atteint 0, on ajoute un PC
 							pointsControl.add(i+1);
-							decomptePC = (int) Math.round(interPC * diff); /**TODO modifier doc*/
-							diff += 0.2;
+							decomptePC = (int) Math.round(interPC * diff); //Plus le jeu avance, plus les PC seront eloignes pour augmenter la difficulte.
+							diff += 0.2; //On incremente sensiblement la difficulte
 						}else {
-							decomptePC -= 1;
+							decomptePC -= 1; //Si le decompte n'atteint pas 0, on le decremente
 						}
 						
 					}
@@ -218,6 +219,8 @@ public class Piste  extends ArrayList<Point>{
 		/**
 		 * Methode ajoutePoint
 		 * Ajoute un point valide apres le dernier point de la piste
+		 * 
+		 * A chaque point que l'on ajoute, on verifie si un obstacle se situera sur le segment entre le dernier et le point que l'on va creer.
 		 */
 		public void ajoutePoint() {
 			int i = size()-1; //i represente l'indice du dernier point dans le tableau
@@ -233,14 +236,13 @@ public class Piste  extends ArrayList<Point>{
 				}
 			}
 			add(p);
-			if(this.decompteObs - 1 == 0) {
+			if(this.decompteObs - 1 == 0) { //Si il est temps de mettre un point, on en ajoute un.
 				int xleft = rand.nextInt(175)-p.x;
-				obstacles.add(new Point (xleft, p.y+ rand.nextInt(ecart)));
-				decompteObs = (int) Math.round(interObs / (diff+1)); /**TODO modifier doc*/
+				obstacles.add(new Point (xleft, p.y+ rand.nextInt(ecart))); //Le point le plus a gauche d'obstacle est placé de facon aleatoire sur le troncon de route
+				decompteObs = (int) Math.round(interObs / (diff+1)); 
 			}else {
 				decompteObs -= 1;
 			}
-			System.out.print(decompteObs + "\n");
 		}
 		
 		/** 
