@@ -70,8 +70,8 @@ public class Accelerer extends Thread{
 
 	/**
 	 * methode terminate
-	 * Cette methode va arreter le jeu entier, que ce soit les threads et les inputs,
-	 * et demander l'affichage de l'ecran de fin
+	 * 
+	 Mets running a false
 	 */
 	public void terminate() {
 		if(running) {
