@@ -63,7 +63,7 @@ public class Etat {
 	public int largeurM = 90;
 	
 	/** Vitesse perdue lors d'une collision*/
-	public double vCol = 2.5;
+	public double vCol = 1.5;
 		
 	/** Liste des checkpoints passes*/
 	public ArrayList<Point> PC;
@@ -137,7 +137,7 @@ public class Etat {
 	public double potAcc() {
 		int i = p.getPos() / Piste.ecart; //indice du point déjà passe part l'ovale
 		int j = i+1; //indice du point pas encore passé
-		double coeff = (p.get(i).x - p.get(j).x)/Piste.ecart; 	/**TODO not working*/
+		double coeff = (p.get(i).x - p.get(j).x)/Piste.ecart; 
 		double decalDroite = 0;
 		double decalGauche = 0;
 		for(int i1 = -w/2; i1 <= w/2; i1+=3) {
@@ -148,7 +148,7 @@ public class Etat {
 				return maxAcc;
 			}
 		}
-		return -Math.max(coeff * ((p.getPos()%Piste.ecart)) + p.get(i).x-decX -(xC-w), xC+w*2 -(coeff * ((p.getPos()%Piste.ecart)) + p.get(i).x-decX+w)); 
+		return -Math.max(coeff * (p.getPos()%Piste.ecart) + p.get(i).x-decX -(xC-w), xC+w*2 -(coeff * ((p.getPos()%Piste.ecart)) + p.get(i).x-decX+w)); //On renvoie la distance la plus grande par rapport a la piste multipliee par le coefficient de ralentissement
 	}
 	
 	/**
@@ -159,36 +159,12 @@ public class Etat {
 	public void passePC() {
 		Point[] PCV = p.getPC();
 		for(Point point : PCV) {   //On effectue les tests pour chaque point dans la liste des points visibles.
-			/*System.out.print((point.y - yC - h/2 <= h) + "\n");
-			System.out.print((point.y + 10 - yC >= 0) + "\n");
-			System.out.print((point.x - (decX) + 2*w >=  xC) + "\n");
-			if 	(!(point.x - (decX) + 2*w >=  xC)){
-				System.out.print(point.x + " - ");
-				System.out.print(decX  + " + ");
-				System.out.print( 2*w + " >= ");
-				System.out.print( xC + "\n");
-			}
-			System.out.print((point.x - (decX-w/4) - w/2 <= xC + 2*w) + "\n");
-			if 	(!(point.x - (decX-w/4) <= xC + 2*w)){
-				System.out.print(point.x + " - ");
-				System.out.print(decX-w/4  + " <= ");
-				System.out.print( 2*w + " + ");
-				System.out.print( xC + "\n");
-			}
-			System.out.print("Passe pas? \n");*/
-			if(point.y - yC - h/2- Math.round(vitesse) <= h && point.y + 10 - yC >= 0 && point.x - (decX) + 2*w  >=  xC && point.x - (decX/*-w/4*/) /*- w/2*/<= xC + 2*w ) {
-				//Point P = new Point(point.x - decX, point.y - p.getPos());	//On soustraie decX et la pos pour avoir les coordonnees du point par rapport au depart.
-				//System.out.print("Si");
+			if(point.y - yC - h/2- Math.round(vitesse) <= h && point.y + 10 - yC >= 0 && point.x - (decX) + 2*w  >=  xC && point.x - (decX) <= xC + 2*w ) {
 				t.addTime();
-				p.pointsControl.remove(0);
-				/*if(!PC.contains(P)) {  //parfois le temps s'ajoute plusieurs fois. PB d'enregistrement des points?
-						t.addTime();
-						PC.add(P);
-						System.out.print("et la");
-				}*/
+				p.pointsControl.remove(0); //Une fois que l'on a ajouté le temps, on supprime le PC pour ne pas le compter deux fois.
 			}
 			if(point.y > yS) {
-				p.pointsControl.remove(0);
+				p.pointsControl.remove(0); //On supprime les PC qui ne sont plus visibles
 			}
 		}
 	}
@@ -202,13 +178,13 @@ public class Etat {
 	public void accelere() {
 		double acc = potAcc();
 		if(acc > 0.) {	
-			if(vitesse+acc >= vitesseM) {
+			if(vitesse+acc >= vitesseM) { //Gestion de l'acceleration
 				vitesse = vitesseM;
 			}else{
 				vitesse += acc;
 			}
-		}else {
-			if(vitesse - acc * slowCst <= 0) {
+		}else { 
+			if(vitesse - acc * slowCst <= 0) { //Et de la decelaration 
 				vitesse = 0;
 			}else{
 				vitesse -= acc * slowCst;
@@ -225,8 +201,8 @@ public class Etat {
 	public void percuteObs() {
 		Point[] ObsV = p.getObs();
 		for(Point point : ObsV) {
-			if(point.y - yC - h/2- Math.round(vitesse) <= h && point.y + 10 - yC >= 0 && point.x - (decX) + 2*w  >=  xC && point.x - (decX/*-w/4*/) /*- w/2*/<= xC + 2*w ) {
-				p.obstacles.remove(0);
+			if(point.y - yC - h/2- Math.round(vitesse) <= h && point.y + 10 - yC >= 0 && point.x - (decX) + 2*w  >=  xC && point.x - (decX) <= xC + 2*w ) {
+				p.obstacles.remove(0); //meme physique que les checkpoints, pas le meme comportement... Totallement incomprehensible.
 				collision();
 			}
 			if(point.y > yS) {
