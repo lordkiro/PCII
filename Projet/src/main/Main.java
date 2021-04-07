@@ -20,9 +20,9 @@ public class Main {
 		Control Controleur = new Control(Modele, Vue, Deplacer);
 		Piste P = new Piste(Modele);
 		Accelerer Acc = new Accelerer(Modele, Vue, Controleur);
-		Avancer Avancer = new Avancer(Modele, P, Vue, Controleur, Acc);
 		Temps Montre = new Temps(Modele);
 		Timer Chrono = new Timer(Modele, Vue, P, Montre);
+		Avancer Avancer = new Avancer(Modele, P, Vue, Controleur, Acc, Deplacer, Chrono);
 		Vue.setPiste(P);
 		Acc.setAvancer(Avancer);
 		
