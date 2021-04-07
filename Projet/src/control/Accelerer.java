@@ -76,11 +76,6 @@ public class Accelerer extends Thread{
 	public void terminate() {
 		if(running) {
 			running = false; //stop le thread de Avancer
-			c.running = false; //stop les inputs souris
-
-			/**TODO implementer les terminate des autres threads*/
-			/*
-			a.endingscreen(); //demande l'affichage de l'ecran de fin*/
 		}
 	}
 }
