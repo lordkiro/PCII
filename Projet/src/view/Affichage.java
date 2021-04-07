@@ -321,6 +321,12 @@ public class Affichage extends JPanel {
 	public void setPiste(Piste p) {
 		this.p = p;
 	}
+	
+	/** 
+	* Methode ready
+	*
+	* Fais apparaitre la fenetre de dialogue qui explique le jeu. Si on appuie sur "OK" on renvoie true
+	*/
 	public boolean ready() {
 		JOptionPane d = new JOptionPane();
 		return (JOptionPane.showConfirmDialog( this, "Vous allez jouer à un jeu contre la montre. Passez les checkpoints pour recharger votre temps. Evitez les obstacles et l'herbe pour ne pas perdre de vitesse.", "Accueil",  JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION);
