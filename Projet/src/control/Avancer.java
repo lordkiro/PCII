@@ -9,8 +9,7 @@ import model.Piste;
 import view.Affichage;
 
 public class Avancer extends Thread{
-	/** Temps de latence entre deux décallages en millisecondes
-	 * @warning modifier coeffChute si on modifie*/ //TODO
+	/** Temps de latence entre deux décallages en millisecondes*/ 
 	public static int t = 50;
 	
 	/** La piste que l'on va faire defiler */
@@ -28,9 +27,14 @@ public class Avancer extends Thread{
 	/** Si le jeu est en train de tourner ou pas*/
 	public boolean running;
 	
-	/** La classer Accelerer affilié au jeu actuel*/
+	/** La classer Accelerer affiliée au jeu actuel*/
 	public Accelerer acc;
 	
+	/** La classe Deplacer affiliée au jeu*/
+	public Deplacer d;
+	
+	/**L'instance de timer du jeu*/
+	public Timer ti;
 	/**
 	 * Constructeur Avancer
 	 * Affecte les parametres passes aux
@@ -42,14 +46,20 @@ public class Avancer extends Thread{
 	 * @param Affiachage aff, l'affichage auquel on demandera des mises a jour
 	 * @param Control c, l'instance de control du jeu
 	 * @param Accelerer acc, l'instance d'Accelerer du jeu
+	 * @param Deplacer d, l'instance de Deplacer
+	 * @param Timer t, l'instance de Timer
 	 */
-	public Avancer(Etat etat, Piste pi, Affichage aff, Control c, Accelerer acc) {
+	public Avancer(Etat etat, Piste pi, Affichage aff, Control c, Accelerer acc, Deplacer d, Timer t) {
 		this.e = etat;
 		this.p = pi;
 		this.a = aff;
 		this.c = c;
+		this.acc = acc;
 		acc.setAvancer(this);
 		e.vitesse = 5.;
+		this.d =d;
+		this.ti = t;
+		ti.setAv(this);
 	}
 	
 	/**
@@ -80,17 +90,17 @@ public class Avancer extends Thread{
 	
 	/**
 	 * methode terminate
+	 * 
 	 * Cette methode va arreter le jeu entier, que ce soit les threads et les inputs,
-	 * et demander l'affichage de l'ecran de fin
+	 * 
 	 */
 	public void terminate() {
 		if(running) {
 			running = false; //stop le thread de Avancer
-			c.running = false; //stop les inputs souris
-			
-			/**TODO implementer les terminate des autres threads*/
-			/*vol.terminate(); //stop le thread de Voler
-			a.endingscreen(); //demande l'affichage de l'ecran de fin*/
+			c.terminate(); //stop les inputs souris
+			acc.terminate(); //On stop les autres threads
+			d.terminate();
+			ti.terminate();
 		}
 	}
 }
