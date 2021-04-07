@@ -71,7 +71,7 @@ public class Accelerer extends Thread{
 	/**
 	 * methode terminate
 	 * 
-	 Mets running a false
+	 * Mets running a false
 	 */
 	public void terminate() {
 		if(running) {
