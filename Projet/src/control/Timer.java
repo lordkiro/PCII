@@ -26,6 +26,10 @@ public class Timer extends Thread{
 	/**Si le jeu est en train de tourner ou pas*/
 	public boolean running;
 	
+	
+	/**L'instance d'avancer du jeu*/
+	public Avancer av;
+	
 	/**
 	 * Constructeur Timer
 	 * 
@@ -68,19 +72,24 @@ public class Timer extends Thread{
 		}
 	}
 	
-	
-	//TODO
-	/**
+		/**
 	 * methode terminate
 	 * Cette methode va arreter le jeu entier, que ce soit les threads et les inputs souris,
 	 * et demander l'affichage de l'ecran de fin
 	 */
 	public void terminate() {
-		if(running) {
-			running = false; //stop le thread de Avancer
-			/*c.running = false; //stop les inputs souris
-			vol.terminate(); //stop le thread de Voler
-			a.endingscreen(); //demande l'affichage de l'ecran de fin*/
+		running = false;
+		if(av.running) {
+			av.terminate();	
 		}
+	}
+	
+	/**
+	 * Methode setAv
+	 * 
+	 * Lie l'instance d avancer du jeu
+	 */
+	public void setAv(Avancer av) {
+		this.av = av;
 	}
 }
