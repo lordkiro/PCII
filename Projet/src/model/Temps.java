@@ -38,7 +38,6 @@ public class Temps{
 	 * Methode decreaseT
 	 * le temps passe... (on decroit d'une seconde le temps) 
 	 * 
-	 * TEMPORAIRE : tant qu on a pas les checkpoint, si on perd apres une baisse de temps, on apelle addTime
 	 */
 	public void decreaseT() {
 		if(t-1 <= 0) {
