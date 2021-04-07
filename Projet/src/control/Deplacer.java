@@ -64,7 +64,12 @@ public class Deplacer extends Thread{
 		}
 	}
 	
-	/**TODO 
-	 * methode terminate
+	/**
+	 * Methode terminate
+	 * 
+	 * mets running a faux
 	 */
+	public void terminate() {
+		running = false;
+	}
 }
