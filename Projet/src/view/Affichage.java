@@ -52,7 +52,7 @@ public class Affichage extends JPanel {
 	public Affichage(Etat e) {
 		setPreferredSize(new Dimension(xS, yS)); //On rentre les dimensions voulues pour la fenetre
 		try {
-			image = ImageIO.read(new File("vehicule.png")); //On charge l'image appelee vehicule.png
+			image = ImageIO.read(new File("vehicule2_resized.png")); //On charge l'image appelee vehicule.png
 		} catch (IOException e1) {
 			e1.printStackTrace();
 			System.out.print("L'image n'a pas pu etre chargee"); //Si on n'arrive pas a charger l'image, on prévient l'utilisateur
@@ -89,8 +89,8 @@ public class Affichage extends JPanel {
 		writeTemps(g);		//On ecrit apres tous les dessins et coloriages afin que le texte soit par dessus
 		writeVitesse(g);
 		writeScore(g);
-		g.drawOval(etat.xC, etat.yC, etat.w, etat.h); //techniquement on devrait pouvoir avoir une methode sans parametre...
-		//g.drawImage(image, etat.xC, etat.yC, null); //On commente/decommente pour avoir d'affiché l'image ou pas. TODO: dimensions(centrage) et transparence
+		//g.drawOval(etat.xC, etat.yC, etat.w, etat.h); //techniquement on devrait pouvoir avoir une methode sans parametre...
+		g.drawImage(image, etat.xC, etat.yC, null); //On commente/decommente pour avoir d'affiché l'image ou pas. 
 	}
 	
 	/**
